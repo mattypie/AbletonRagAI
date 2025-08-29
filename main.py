@@ -7,11 +7,13 @@ from vector import retriever
 stream_handler = StreamingStdOutCallbackHandler()
 
 #What model you use
-model = OllamaLLM(model="llama3.1:8b",
-                  streaming = True,
-                  callbacks=[stream_handler],
-                  temperature=0 #Makes it deterministic
-                  )
+model = OllamaLLM(
+    model="deepseek-r1:8b",
+    streaming = True,
+    callbacks=[stream_handler],
+    temperature=0.0, #Makes it deterministic
+    reasoning = False,
+    )
 
 #What it will tell the llm for each prompt
 template = """
@@ -24,7 +26,7 @@ Keep answers concise, use numbered steps when explaining processes, and include 
 Where helpful, end with a brief checklist so the user can verify they followed the instructions correctly.
 Do not invent features, settings, or menu paths. Use only the retrieved information to answer the question. 
 
-Here are revelant documents: {docs}. Do not mention or refer to the provided documents, retrieved text, or any sources.
+Here are revelant documents: {docs}. Mention or refer to the provided documents, retrieved text, or any sources.
 Simply answer as if you know the information.
 
 Here is the question to answer: {question}
@@ -43,5 +45,13 @@ while True:
         break
 
     docs = retriever.invoke(question)
+
+    print("\n----------------------------------------")
     #result = 
     chain.invoke({"docs": docs, "question": question})
+
+    print("\n")
+    for i, doc in enumerate(docs):
+        print(f"--- Chunk {i+1} ---")
+        print(doc.page_content)
+        print("Metadata:", doc.metadata)

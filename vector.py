@@ -12,20 +12,18 @@ DB_LOCATION = "./chrome_langchain_db"
 ADD_DOCUMENTS = not os.path.exists(DB_LOCATION)
 CHUNK_SIZE = 600
 CHUNK_OVERLAP = 80
-K_VECTOR = 10
+K_VECTOR = 5
 SCORE_TRESHOLD_VECTOR = 0.4
 MAX_BATCH_SIZE = 500
 
 #Clean Function
 def clean_text(text: str) -> str:
-    """Remove excessive whitespace, headers, footers, and weird artifacts."""
     text = re.sub(r'\s+', ' ', text)  # collapse multiple spaces/newlines
     text = re.sub(r'Page\s*\d+\s*/\s*\d+', '', text, flags=re.IGNORECASE)  # remove page indicators
     return text.strip()
 
 #Batch documents to not exceed embedding limit
 def batch_documents(docs, batch_size):
-    """Yield batches of documents to avoid exceeding embedding limits."""
     for i in range(0, len(docs), batch_size):
         yield docs[i:i + batch_size]
 
