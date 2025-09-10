@@ -50,8 +50,20 @@ while True:
     #result = 
     chain.invoke({"docs": docs, "question": question})
 
+    """
     print("\n")
     for i, doc in enumerate(docs):
+        print(f"--- Chunk {i+1} ---")
+        print(doc.page_content)
+        print("Metadata:", doc.metadata)
+    """
+    print("\n")
+
+    seen = set()
+    for i, doc in enumerate(docs):
+        if doc.page_content in seen:
+            continue
+        seen.add(doc.page_content)
         print(f"--- Chunk {i+1} ---")
         print(doc.page_content)
         print("Metadata:", doc.metadata)
